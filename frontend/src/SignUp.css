@@ -1,0 +1,24 @@
+/*#username2,
+#password2,
+#confirmPassword,
+#firstName,
+#lastName,
+#email {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid rgb(138, 83, 83);
+  box-sizing: border-box;
+  background-color: #c2d8e4;
+  border-radius: 8px;
+}
+
+form {
+  border: 3px solid #2a4657;
+  background-color: #7aa8c5;
+}
+
+#signUpForm {
+  width: 200px;
+}*/

@@ -1,0 +1,61 @@
+/*#nav {
+  width: 100%;
+  float: left;
+  margin: 0 0 3em 0;
+  padding: 0;
+  list-style: none;
+  background-color: #2924316b;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+
+#nav li a {
+  float: right;
+  display: block;
+  padding: 8px 15px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #069;
+  border-right: 1px solid rgb(20, 19, 19);
+}
+
+#searchbar {
+  margin-left: 2.5em;
+}
+
+#searchButton {
+  background-color: #26a4ca;
+  font-size: 18px;
+  border-radius: 12px;
+}
+
+#searchButton:hover {
+  opacity: 0.8;
+}
+
+#button {
+  background-color: #76c0a7;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+#button:hover {
+  opacity: 0.8;
+}
+
+#search {
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+  border-radius: 8px;
+}
+
+#searchmovie {
+  padding-left: 1em;
+}*/
+
+#menuoptions {
+  float: right;
+}

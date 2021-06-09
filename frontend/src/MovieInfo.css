@@ -1,0 +1,37 @@
+#information {
+  border-top: ridge;
+  border-bottom: ridge;
+  border-left: ridge;
+  border-right: ridge;
+  font-family: "Times New Roman", Times, serif;
+  background-color: royalblue;
+}
+
+#addWatchList,
+#addWatchedList {
+  display: inline-block;
+}
+
+#addWatchList {
+  background-color: #729978;
+  height: 30px;
+}
+
+#watched {
+  background-color: #219935;
+  height: 30px;
+}
+
+#addWatchList:hover,
+#watched:hover {
+  opacity: 0.8;
+}
+
+#everything {
+  margin-left: 10em;
+  margin-right: 10em;
+}
+
+#alreadyWatched {
+  visibility: hidden;
+}

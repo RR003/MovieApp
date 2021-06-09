@@ -1,0 +1,60 @@
+#notSignedIn h1 {
+  border-width: 2px 20px;
+  border-style: solid;
+}
+
+#watchlist {
+  padding-top: 3em;
+  border-bottom-style: ridge;
+  border-top-style: ridge;
+  border-color: #030c13;
+}
+
+#movies {
+  display: inline-block;
+
+  border-style: ridge;
+  border-color: #99bcd6;
+}
+
+#movieButton {
+  background-color: #a2b7c7;
+  height: 3em;
+  padding: 5px;
+  margin-right: 10px;
+  margin-bottom: 1em;
+}
+
+#movieButton:hover,
+#delete:hover {
+  opacity: 0.8;
+}
+
+#delete {
+  background-color: #c55a5a;
+}
+
+#theWatchedMovie {
+  padding-bottom: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
+  display: inline-block;
+}
+
+#all {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#particles {
+}
+
+#image {
+  width: 300px;
+  height: 200px;
+}
+
+#image:hover {
+  transform: scale(1.05);
+}
