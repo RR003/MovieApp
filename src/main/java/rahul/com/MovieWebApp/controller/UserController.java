@@ -119,7 +119,7 @@ public class UserController {
         Optional<User> user = userRepository.findByUsername(user1.getUsername());
         Optional<User> user2 = userRepository.findByEmail(user1.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        if (user.isEmpty() && user2.isEmpty()) {
+        if (!user.isPresent() && !user2.isPresent()) {
             String encodedPassword = encoder.encode(user1.getPassword());
             user1.setPassword(encodedPassword);
             user1.setVerified("no");
@@ -130,7 +130,7 @@ public class UserController {
             System.out.println(siteURL);
             service.sendVerificationEmail(user1, siteURL);
             return new Image("success");
-        }else if (user.isEmpty()){
+        }else if (!user.isPresent()){
             return new Image("that email is already registered!");
         }else {
             return new Image("that username is already registered!");
@@ -153,7 +153,7 @@ public class UserController {
         String email = image.getUrl();
         System.out.println("forgot password email = " + email);
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
+        if (!user.isPresent()) {
             return new Image("Email is not registered in system");
         }else {
             String randomCode = RandomString.make(64);
