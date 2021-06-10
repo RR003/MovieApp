@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "user_info")
+public class UserInfo {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
@@ -28,8 +28,8 @@ public class User {
     @Transient
     private ArrayList<Integer> watchList = new ArrayList<>();
 
-    public User() {}
-    public User(String firstName, String lastName, String email, String password, String verified) {
+    public UserInfo() {}
+    public UserInfo(String firstName, String lastName, String email, String password, String verified) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

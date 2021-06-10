@@ -1,17 +1,15 @@
 package rahul.com.MovieWebApp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import rahul.com.MovieWebApp.dao.UserRepository;
-import rahul.com.MovieWebApp.model.User;
+import rahul.com.MovieWebApp.model.UserInfo;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @Service
 public class UserServices {
@@ -22,8 +20,8 @@ public class UserServices {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendVerificationEmail(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
-        String toAddress = user.getEmail();
+    public void sendVerificationEmail(UserInfo userInfo, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        String toAddress = userInfo.getEmail();
         String fromAddress = "mail2rahulraja@gmail.com";
         String senderName = "The Movie App";
         String subject = "Please verify your registration";
@@ -40,10 +38,10 @@ public class UserServices {
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
-        content = content.replace("[[name]]", user.getFirstName() + " " +  user.getLastName());
+        content = content.replace("[[name]]", userInfo.getFirstName() + " " +  userInfo.getLastName());
         siteURL = siteURL.substring(0,siteURL.length() - 11);
         siteURL += "verify";
-        String verifyURL = siteURL + "?code=" + user.getVerificationCode();
+        String verifyURL = siteURL + "?code=" + userInfo.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
 
@@ -53,24 +51,24 @@ public class UserServices {
     }
 
     public boolean verify(String verificationCode) {
-        User user = userRepository.findByVerificationCode(verificationCode);
-        if (user == null || user.getVerified().equals("yes")) {
+        UserInfo userInfo = userRepository.findByVerificationCode(verificationCode);
+        if (userInfo == null || userInfo.getVerified().equals("yes")) {
             return false;
         } else {
-            user.setVerificationCode(null);
-            user.setVerified("yes");
-            userRepository.save(user);
+            userInfo.setVerificationCode(null);
+            userInfo.setVerified("yes");
+            userRepository.save(userInfo);
             return true;
         }
     }
 
     public boolean verifyPassword(String code) {
-        User user = userRepository.findByVerificationCode(code);
-        return user != null;
+        UserInfo userInfo = userRepository.findByVerificationCode(code);
+        return userInfo != null;
     }
 
-    public void sendNewPasswordEmail(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
-        String toAddress = user.getEmail();
+    public void sendNewPasswordEmail(UserInfo userInfo, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        String toAddress = userInfo.getEmail();
         String fromAddress = "mail2rahulraja@gmail.com";
         String senderName = "The Movie App";
         String subject = "Forgot Password";
@@ -87,11 +85,11 @@ public class UserServices {
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
-        content = content.replace("[[name]]", user.getFirstName() + " " +  user.getLastName());
+        content = content.replace("[[name]]", userInfo.getFirstName() + " " +  userInfo.getLastName());
 
         siteURL = siteURL.substring(0,siteURL.length() - 19);
         siteURL += "createPassword";
-        String verifyURL = siteURL + "?code=" + user.getVerificationCode();
+        String verifyURL = siteURL + "?code=" + userInfo.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
 

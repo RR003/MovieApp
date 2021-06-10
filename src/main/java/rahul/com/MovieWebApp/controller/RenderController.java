@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import rahul.com.MovieWebApp.dao.UserRepository;
-import rahul.com.MovieWebApp.model.User;
+import rahul.com.MovieWebApp.model.UserInfo;
 import rahul.com.MovieWebApp.service.UserServices;
 
 @Controller
@@ -51,14 +51,14 @@ public class RenderController {
 
     @RequestMapping(value="/createPasswordVerified")
     @ResponseBody
-    public String createNewPassword(@RequestBody User user1) {
+    public String createNewPassword(@RequestBody UserInfo userInfo1) {
         System.out.println("creating new password ....");
-        User user = userRepository.findByVerificationCode(user1.getVerificationCode());
-        user.setVerificationCode(null);
+        UserInfo userInfo = userRepository.findByVerificationCode(userInfo1.getVerificationCode());
+        userInfo.setVerificationCode(null);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        String encodedPassword = encoder.encode(user1.getPassword());
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
+        String encodedPassword = encoder.encode(userInfo1.getPassword());
+        userInfo.setPassword(encodedPassword);
+        userRepository.save(userInfo);
         return "";
     }
 
