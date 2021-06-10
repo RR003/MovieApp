@@ -2,6 +2,7 @@ package rahul.com.MovieWebApp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,5 +20,10 @@ public class CorsConfig {
                         .allowedOrigins("*");
             }
         };
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        return new JavaMailSender();
     }
 }
