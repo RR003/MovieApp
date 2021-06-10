@@ -46,6 +46,10 @@ const SignUp = (props) => {
     setEmail(event.target.value);
   };
 
+  let url = "";
+  if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+  else url = "https://movieapp003.herokuapp.com";
+
   const handleOnSubmit = () => {
     if (password.length < 8)
       setMessage("Password must be at least 8 characters");
@@ -53,7 +57,7 @@ const SignUp = (props) => {
     else {
       axios({
         method: "post",
-        url: "/user/signup",
+        url: url + "/user/signup",
         data: {
           username: username,
           firstName: firstName,

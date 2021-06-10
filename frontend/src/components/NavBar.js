@@ -94,6 +94,10 @@ const NavBar = (props) => {
     console.log("person is not signed in");
   }
 
+  let url = "";
+  if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+  else url = "https://movieapp003.herokuapp.com";
+
   // console.log(data);
   // console.log(data);
 
@@ -103,7 +107,7 @@ const NavBar = (props) => {
 
   const getMovieFunction = () => {
     console.log("getting movie");
-    axios.get(`/movie/${movieTitle}`).then((res) => {
+    axios.get(url + `/movie/${movieTitle}`).then((res) => {
       console.log(data);
       console.log(JSON.stringify(res.data[0]));
       console.log(JSON.stringify(res.data[1]));

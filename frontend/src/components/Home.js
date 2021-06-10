@@ -13,14 +13,23 @@ class Home extends Component {
     data: {},
     movies: [],
     images: [],
+    url: "",
   };
 
   async componentDidMount() {
+    console.log(process.env.NODE_ENV);
+    let url = "";
+    if (process.env.NODE_ENV === "production")
+      url = "https://movieapp003.herokuapp.com";
+    else url = "http://localhost:8081";
+    this.setState({ url: url });
     console.log(this.props.location.state);
     if (this.props.location.state !== undefined) {
       console.log(this.props.location.state.username);
       this.setState({ username: this.props.location.state.username });
-      let res = await fetch(`/user/${this.props.location.state.username}`);
+      let res = await fetch(
+        url + `/user/${this.props.location.state.username}`
+      );
       let body = await res.json();
       this.setState({ data: body });
       if (this.state.data.firstName !== undefined) {
@@ -29,8 +38,8 @@ class Home extends Component {
         console.log(this.state.data.watchList);
         for (var i = 0; i < this.state.data.watchList.length; i++) {
           let id = this.state.data.watchList[i];
-          let response = await fetch(`/movie/get/${id}`);
-          let response2 = await fetch(`/movie/getImage/${id}`);
+          let response = await fetch(url + `/movie/get/${id}`);
+          let response2 = await fetch(url + `/movie/getImage/${id}`);
           let data = await response.json();
           let data2 = await response2.json();
           moviesTemp.push(data);
@@ -53,7 +62,7 @@ class Home extends Component {
     console.log(index);
     let id = this.state.movies[index].id;
     // localStorage.setItem("dataForMovieInfo", this.state.data);
-    axios.get(`/movie/get/${id}`).then((res) => {
+    axios.get(this.state.url + `/movie/get/${id}`).then((res) => {
       console.log(res.data);
 
       this.props.history.push({
@@ -69,7 +78,7 @@ class Home extends Component {
   clickImage = (event) => {
     let index = event.target.value;
     let id = this.state.movies[index].id;
-    axios.get(`/movie/get/${id}`).then((res) => {
+    axios.get(this.state.url + `/movie/get/${id}`).then((res) => {
       console.log(res.data);
 
       this.props.history.push({
@@ -85,7 +94,7 @@ class Home extends Component {
   deleteMovie = (event) => {
     let movieId = event.target.value;
     axios
-      .delete("/user/deleteWatchList", {
+      .delete(this.state.url + "/user/deleteWatchList", {
         data: {
           username: this.state.username,
           movieId: movieId,

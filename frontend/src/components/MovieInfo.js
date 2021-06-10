@@ -19,17 +19,22 @@ class MovieInfo extends Component {
     ourRating: "",
     commentsAndRatings: "",
     message2: "",
+    url: "",
   };
 
   async componentDidMount() {
-    let ratings = await fetch(`/movie/rating/${this.state.id}`);
+    let url = "";
+    if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+    else url = "https://movieapp003.herokuapp.com";
+    this.setState({ url: url });
+    let ratings = await fetch(url + `/movie/rating/${this.state.id}`);
     ratings = await ratings.json();
     if (ratings === -1) {
       ratings = "no ratings yet";
     }
     this.setState({ ourRating: ratings });
     let commentsAndRatings = await fetch(
-      `/movie/comment&rating/${this.state.id}`
+      url + `/movie/comment&rating/${this.state.id}`
     );
     commentsAndRatings = await commentsAndRatings.json();
     console.log(commentsAndRatings);
@@ -86,7 +91,7 @@ class MovieInfo extends Component {
         this.setState({ show: true });
       } else {
         axios
-          .post("/user/addWatchList", {
+          .post(this.state.url + "/user/addWatchList", {
             username: this.state.data.username,
             movieId: this.state.id,
           })
@@ -101,10 +106,11 @@ class MovieInfo extends Component {
   };
 
   addToWatchedList = () => {
+    console.log(this.state.url);
     let list = this.state.data.watchList;
     for (let i = 0; i < list.length; i++) {
       if (this.state.id === list[i]) {
-        axios.delete("/user/deleteWatchList", {
+        axios.delete(this.state.url + "/user/deleteWatchList", {
           data: {
             username: this.state.data.username,
             movieId: this.state.id,
@@ -112,15 +118,14 @@ class MovieInfo extends Component {
         });
       }
     }
-    axios
-      .post("/user/addWatchedList", {
-        username: this.state.data.username,
-        movieId: this.state.id,
-        dateCreated: new Date(),
-        rating: -1,
-        comment: "",
-      })
-      .then(window.location.reload(false));
+    axios.post(this.state.url + "/user/addWatchedList", {
+      username: this.state.data.username,
+      movieId: this.state.id,
+      dateCreated: new Date(),
+      rating: -1,
+      comment: "",
+    });
+    // .then(window.location.reload(false));
     /*.then(
         this.props.history.push({
           pathname: "/watchedList",

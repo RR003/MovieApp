@@ -14,8 +14,12 @@ const EnterEmail = (props) => {
     setEmail(event.target.value);
   };
 
+  let urls = "";
+  if (process.env.NODE_ENV === "development") urls = "http://localhost:8081";
+  else urls = "https://movieapp003.herokuapp.com";
+
   const onSubmit = () => {
-    axios.post("/user/forgotPassword", { url: email }).then((res) => {
+    axios.post(urls + "/user/forgotPassword", { url: email }).then((res) => {
       console.log(res.data);
       window.location.href = "/verify";
     });

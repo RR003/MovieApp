@@ -17,6 +17,7 @@ class WatchedList extends Component {
     showRating: false,
     movieId: null,
     movieTitle: null,
+    url: "",
   };
 
   clickedGiveRating = (event) => {
@@ -30,6 +31,10 @@ class WatchedList extends Component {
 
   async componentDidMount() {
     console.log(this.props.location.state);
+    let url = "";
+    if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+    else url = "https://movieapp003.herokuapp.com";
+    this.setState({ url: url });
     try {
       if (
         this.props.location.state.username === undefined ||
@@ -42,14 +47,18 @@ class WatchedList extends Component {
         let movieTitles = [];
         let rating = [];
         let ids = [];
-        let rest = await fetch(`user/${this.props.location.state.username}`);
+        console.log("before");
+        let rest = await fetch(
+          url + `/user/${this.props.location.state.username}`
+        );
+        console.log(rest);
         let response = await rest.json();
         console.log(response);
         let movies = response.watchedList;
         console.log("MOVIES = " + movies);
         for (let i = 0; i < movies.length; i++) {
           let movie = movies[i];
-          let res = await fetch(`/movie/get/${movie.movieId}`);
+          let res = await fetch(url + `/movie/get/${movie.movieId}`);
           let body = await res.json();
           movieTitles.push(body.title);
           ids.push(body.id);

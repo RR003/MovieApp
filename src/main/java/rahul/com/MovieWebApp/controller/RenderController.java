@@ -10,6 +10,8 @@ import rahul.com.MovieWebApp.dao.UserInfoRepository;
 import rahul.com.MovieWebApp.model.UserInfo;
 import rahul.com.MovieWebApp.service.UserServices;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class RenderController {
 
@@ -21,11 +23,14 @@ public class RenderController {
 
     @RequestMapping("/verify")
     @ResponseBody
-    public ModelAndView welcome(@Param("code") String code) {
+    public ModelAndView welcome(@Param("code") String code, HttpServletRequest request) {
         if (service.verify(code)) {
             System.out.println("account is verified!");
             ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("AccountCreated");
+            String siteURL = request.getRequestURL().toString();
+            if (siteURL.contains("http://localhost:8081")) {
+                modelAndView.setViewName("AccountCreated");
+            }else modelAndView.setViewName("AccountCreatedReal");
             return modelAndView;
         } else {
             ModelAndView modelAndView = new ModelAndView();
@@ -65,10 +70,14 @@ public class RenderController {
 
     @RequestMapping("/newPassword")
     @ResponseBody
-    public ModelAndView newPassword() {
+    public ModelAndView newPassword(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("NewPasswordSuccess");
+        String siteURL = request.getRequestURL().toString();
+        if (siteURL.contains("http://localhost:8081")) {
+            modelAndView.setViewName("NewPasswordSuccess");
+        }else modelAndView.setViewName("AccountCreatedReal");
         return modelAndView;
+
     }
 
 

@@ -10,9 +10,14 @@ class Movies extends Component {
     movie: "",
     data: "",
     images: [],
+    url: "",
   };
 
   componentDidMount() {
+    let url = "";
+    if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+    else url = "https://movieapp003.herokuapp.com";
+    this.setState({ url: url });
     let list = JSON.parse(localStorage.getItem("list"));
     // console.log(this.state);
     this.setState({ movies: list });
@@ -27,33 +32,37 @@ class Movies extends Component {
   getMovie = (event) => {
     let index = event.target.value;
     localStorage.setItem("dataForMovieInfo", this.state.data);
-    axios.get(`/movie/${this.state.movie}/${index}`).then((res) => {
-      console.log(res.data);
-      // console.log(this.state.username)
-      this.props.history.push({
-        pathname: "/movieInfo",
-        state: {
-          newState: res.data,
-          data: this.state.data,
-        },
+    axios
+      .get(this.state.url + `/movie/${this.state.movie}/${index}`)
+      .then((res) => {
+        console.log(res.data);
+        // console.log(this.state.username)
+        this.props.history.push({
+          pathname: "/movieInfo",
+          state: {
+            newState: res.data,
+            data: this.state.data,
+          },
+        });
       });
-    });
   };
 
   clickImage = (event) => {
     let index = event.target.value;
     localStorage.setItem("dataForMovieInfo", this.state.data);
-    axios.get(`/movie/${this.state.movie}/${index}`).then((res) => {
-      console.log(res.data);
-      // console.log(this.state.username)
-      this.props.history.push({
-        pathname: "/movieInfo",
-        state: {
-          newState: res.data,
-          data: this.state.data,
-        },
+    axios
+      .get(this.state.url + `/movie/${this.state.movie}/${index}`)
+      .then((res) => {
+        console.log(res.data);
+        // console.log(this.state.username)
+        this.props.history.push({
+          pathname: "/movieInfo",
+          state: {
+            newState: res.data,
+            data: this.state.data,
+          },
+        });
       });
-    });
   };
 
   render() {

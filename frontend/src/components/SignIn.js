@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let url = "";
+if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+else url = "https://movieapp003.herokuapp.com";
+
+console.log("url = " + url);
+
 const SignIn = (props) => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -53,7 +59,7 @@ const SignIn = (props) => {
 
   const handleOnSubmit = () => {
     axios
-      .post(`/user/login/`, {
+      .post(url + `/user/login/`, {
         username: username,
         password: password,
       })
@@ -62,7 +68,7 @@ const SignIn = (props) => {
         let body = res.data;
         console.log(body);
         if (body.url === "success") {
-          axios.get(`user/${username}`).then((res) => {
+          axios.get(url + `/user/${username}`).then((res) => {
             props.history.push({
               pathname: "/",
               state: res.data,
