@@ -8,14 +8,14 @@ import rahul.com.MovieWebApp.model.UserInfo;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserInfo, Integer> {
+public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     public Optional<UserInfo> findByUsername(String username);
     public Optional<UserInfo> findByEmail(String email);
 
     @Query(value = "SELECT username FROM user", nativeQuery = true)
     public ArrayList<String> getAllUsernames();
 
-    @Query(value = "SELECT * FROM user WHERE verification_code = :verification_code", nativeQuery = true)
+    @Query(value = "SELECT * FROM userinfo WHERE verification_code = :verification_code", nativeQuery = true)
     public UserInfo findByVerificationCode(@Param("verification_code") String verificationCode);
 
     /*@Query(value = "select rating from watchedlist where movie_id = :movie_id", nativeQuery = true)

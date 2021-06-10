@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import rahul.com.MovieWebApp.dao.UserRepository;
+import rahul.com.MovieWebApp.dao.UserInfoRepository;
 import rahul.com.MovieWebApp.model.UserInfo;
 
 import javax.mail.MessagingException;
@@ -15,12 +15,18 @@ import java.io.UnsupportedEncodingException;
 public class UserServices {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserInfoRepository userInfoRepository;
 
     @Autowired
     private JavaMailSender mailSender;
 
     public void sendVerificationEmail(UserInfo userInfo, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        System.out.println("URL = " + siteURL);
+        if (!siteURL.equals("http://localhost:8081/user/signup")) {
+            siteURL = "https://movieapp003.herokuapp.com/user/signup";
+        }else {
+            System.out.println("is running from localhost");
+        }
         String toAddress = userInfo.getEmail();
         String fromAddress = "mail2rahulraja@gmail.com";
         String senderName = "The Movie App";
@@ -51,19 +57,20 @@ public class UserServices {
     }
 
     public boolean verify(String verificationCode) {
-        UserInfo userInfo = userRepository.findByVerificationCode(verificationCode);
+        UserInfo userInfo = userInfoRepository.findByVerificationCode(verificationCode);
+        System.out.println(userInfo);
         if (userInfo == null || userInfo.getVerified().equals("yes")) {
             return false;
         } else {
             userInfo.setVerificationCode(null);
             userInfo.setVerified("yes");
-            userRepository.save(userInfo);
+            userInfoRepository.save(userInfo);
             return true;
         }
     }
 
     public boolean verifyPassword(String code) {
-        UserInfo userInfo = userRepository.findByVerificationCode(code);
+        UserInfo userInfo = userInfoRepository.findByVerificationCode(code);
         return userInfo != null;
     }
 

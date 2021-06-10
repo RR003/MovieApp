@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import rahul.com.MovieWebApp.dao.UserRepository;
+import rahul.com.MovieWebApp.dao.UserInfoRepository;
 import rahul.com.MovieWebApp.dao.WatchListRepository;
 import rahul.com.MovieWebApp.dao.WatchedListRepository;
 import rahul.com.MovieWebApp.model.Image;
@@ -31,7 +31,7 @@ public class UserController {
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
-    private UserRepository userRepository;
+    private UserInfoRepository userInfoRepository;
     @Autowired
     private WatchListRepository watchlistRepository;
     @Autowired
@@ -43,12 +43,12 @@ public class UserController {
 
     @GetMapping("/")
     public ArrayList<String> getAllUsers() {
-        return userRepository.getAllUsernames();
+        return userInfoRepository.getAllUsernames();
     }
 
     @GetMapping("/{username}")
     public UserInfo getUser(@PathVariable String username){
-        Optional<UserInfo> user = userRepository.findByUsername(username);
+        Optional<UserInfo> user = userInfoRepository.findByUsername(username);
         UserInfo mainUserInfo;
         if (user.isPresent()) {
             mainUserInfo = user.get();
@@ -80,13 +80,13 @@ public class UserController {
         String encodedPassword = encoder.encode(userInfo.getPassword());
         userInfo2.setPassword(encodedPassword);
         System.out.println(userInfo2.getPassword());
-        return userRepository.save(userInfo2);
+        return userInfoRepository.save(userInfo2);
     }
 
     // is a image because string can be parsed as a JSON object. AKA too lazy to google how to do this lol.
     @PostMapping("/login")
     public Image loginUser(@Valid @RequestBody UserInfo userInfo1) {
-        Optional<UserInfo> user = userRepository.findByUsername(userInfo1.getUsername());
+        Optional<UserInfo> user = userInfoRepository.findByUsername(userInfo1.getUsername());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
         if (user.isPresent()) {
             System.out.println(user);
@@ -115,8 +115,8 @@ public class UserController {
     @PostMapping("/signup")
     public Image signupUser(@Valid @RequestBody UserInfo userInfo1, HttpServletRequest request)
             throws UnsupportedEncodingException, MessagingException {
-        Optional<UserInfo> user = userRepository.findByUsername(userInfo1.getUsername());
-        Optional<UserInfo> user2 = userRepository.findByEmail(userInfo1.getEmail());
+        Optional<UserInfo> user = userInfoRepository.findByUsername(userInfo1.getUsername());
+        Optional<UserInfo> user2 = userInfoRepository.findByEmail(userInfo1.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
         if (!user.isPresent() && !user2.isPresent()) {
             String encodedPassword = encoder.encode(userInfo1.getPassword());
@@ -124,7 +124,7 @@ public class UserController {
             userInfo1.setVerified("no");
             String randomCode = RandomString.make(64);
             userInfo1.setVerificationCode(randomCode);
-            userRepository.save(userInfo1);
+            userInfoRepository.save(userInfo1);
             String siteURL = request.getRequestURL().toString();
             System.out.println(siteURL);
             service.sendVerificationEmail(userInfo1, siteURL);
@@ -151,13 +151,13 @@ public class UserController {
     public Image createNewPassword(@RequestBody Image image, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
         String email = image.getUrl();
         System.out.println("forgot password email = " + email);
-        Optional<UserInfo> user = userRepository.findByEmail(email);
+        Optional<UserInfo> user = userInfoRepository.findByEmail(email);
         if (!user.isPresent()) {
             return new Image("Email is not registered in system");
         }else {
             String randomCode = RandomString.make(64);
             user.get().setVerificationCode(randomCode);
-            userRepository.save(user.get());
+            userInfoRepository.save(user.get());
             String siteURL = request.getRequestURL().toString();
             System.out.println(siteURL);
             service.sendNewPasswordEmail(user.get(), siteURL);
