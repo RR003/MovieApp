@@ -14,9 +14,9 @@ class Movies extends Component {
   };
 
   componentDidMount() {
-    let url = "";
-    if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-    else url = "https://movieapp003.herokuapp.com";
+    let url = "https://movieapp003.herokuapp.com";
+    // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+
     this.setState({ url: url });
     let list = JSON.parse(localStorage.getItem("list"));
     // console.log(this.state);

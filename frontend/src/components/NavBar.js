@@ -94,9 +94,8 @@ const NavBar = (props) => {
     console.log("person is not signed in");
   }
 
-  let url = "";
-  if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-  else url = "https://movieapp003.herokuapp.com";
+  let url = "https://movieapp003.herokuapp.com";
+  // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
 
   // console.log(data);
   // console.log(data);

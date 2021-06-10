@@ -17,11 +17,10 @@ class Home extends Component {
   };
 
   async componentDidMount() {
-    console.log(process.env.NODE_ENV);
-    let url = "";
-    if (process.env.NODE_ENV === "production")
-      url = "https://movieapp003.herokuapp.com";
-    else url = "http://localhost:8081";
+    let url = "https://movieapp003.herokuapp.com";
+    // if (process.env.NODE_ENV === "development")
+    // url = "http://localhost:8081";
+
     this.setState({ url: url });
     console.log(this.props.location.state);
     if (this.props.location.state !== undefined) {

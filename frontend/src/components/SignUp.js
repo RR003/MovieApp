@@ -46,9 +46,8 @@ const SignUp = (props) => {
     setEmail(event.target.value);
   };
 
-  let url = "";
-  if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-  else url = "https://movieapp003.herokuapp.com";
+  let url = "https://movieapp003.herokuapp.com";
+  // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
 
   const handleOnSubmit = () => {
     if (password.length < 8)

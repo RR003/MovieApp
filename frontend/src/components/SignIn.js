@@ -38,9 +38,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let url = "";
-if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-else url = "https://movieapp003.herokuapp.com";
+let url = "http://localhost:8081/";
+// if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
 
 console.log("url = " + url);
 

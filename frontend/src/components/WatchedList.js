@@ -31,9 +31,9 @@ class WatchedList extends Component {
 
   async componentDidMount() {
     console.log(this.props.location.state);
-    let url = "";
-    if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-    else url = "https://movieapp003.herokuapp.com";
+    let url = "https://movieapp003.herokuapp.com";
+    // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+
     this.setState({ url: url });
     try {
       if (
