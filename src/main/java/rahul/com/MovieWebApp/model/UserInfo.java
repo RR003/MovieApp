@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Entity
-@Table(name = "user_info")
+@Table(name = "userinfo")
 public class UserInfo {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
