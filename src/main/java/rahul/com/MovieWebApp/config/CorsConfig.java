@@ -22,8 +22,5 @@ public class CorsConfig {
         };
     }
 
-    @Bean
-    public JavaMailSender javaMailSender() {
-        return new JavaMailSender();
-    }
+
 }
