@@ -95,7 +95,7 @@ class MovieInfo extends Component {
           movieId: this.state.id,
         });
 
-        setTimeout(this.goToHome, 1000);
+        setTimeout(this.goToHome, 5);
       }
     }
   };
@@ -122,7 +122,7 @@ class MovieInfo extends Component {
       comment: "",
     });
 
-    setTimeout(this.goToWatchList, 1000);
+    setTimeout(this.goToWatchList, 5);
   };
 
   goToWatchList = () => {
