@@ -90,17 +90,12 @@ class MovieInfo extends Component {
       if (isThere) {
         this.setState({ show: true });
       } else {
-        axios
-          .post(this.state.url + "/user/addWatchList", {
-            username: this.state.data.username,
-            movieId: this.state.id,
-          })
-          .then(
-            this.props.history.push({
-              pathname: "/",
-              state: this.state.data,
-            })
-          );
+        axios.post(this.state.url + "/user/addWatchList", {
+          username: this.state.data.username,
+          movieId: this.state.id,
+        });
+
+        setTimeout(this.goToHome, 1000);
       }
     }
   };
@@ -118,6 +113,7 @@ class MovieInfo extends Component {
         });
       }
     }
+
     axios.post(this.state.url + "/user/addWatchedList", {
       username: this.state.data.username,
       movieId: this.state.id,
@@ -125,13 +121,22 @@ class MovieInfo extends Component {
       rating: -1,
       comment: "",
     });
-    // .then(window.location.reload(false));
-    /*.then(
-        this.props.history.push({
-          pathname: "/watchedList",
-          state: this.state.data,
-        })
-      );*/
+
+    setTimeout(this.goToWatchList, 1000);
+  };
+
+  goToWatchList = () => {
+    this.props.history.push({
+      pathname: "/watchedList",
+      state: this.state.data,
+    });
+  };
+
+  goToHome = () => {
+    this.props.history.push({
+      pathname: "/",
+      state: this.state.data,
+    });
   };
 
   render() {

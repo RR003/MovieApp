@@ -15,13 +15,15 @@ class Ratings extends Component {
     let url = "https://movieapp003.herokuapp.com";
     // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
 
-    axios.put(url + "/user/updateWatchedList", {
-      username: this.props.state.username,
-      movieId: this.props.pass.movieId,
-      rating: this.state.rating,
-      comment: this.state.comment,
-    });
-
+    setTimeout(
+      axios.put(url + "/user/updateWatchedList", {
+        username: this.props.state.username,
+        movieId: this.props.pass.movieId,
+        rating: this.state.rating,
+        comment: this.state.comment,
+      }),
+      1000
+    );
     window.location.reload(false);
   };
 
