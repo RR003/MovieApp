@@ -15,6 +15,7 @@ public class WatchedList {
     private Date dateCreated;
     private int rating;
     private String comment;
+    private String isMovie;
 
     public int getId() {
         return id;
@@ -64,6 +65,14 @@ public class WatchedList {
         this.comment = comment;
     }
 
+    public String getIsMovie() {
+        return isMovie;
+    }
+
+    public void setIsMovie(String isMovie) {
+        this.isMovie = isMovie;
+    }
+
     @Override
     public String toString() {
         return "WatchedList{" +
@@ -73,6 +82,7 @@ public class WatchedList {
                 ", dateCreated=" + dateCreated +
                 ", rating=" + rating +
                 ", comment='" + comment + '\'' +
+                ", isMovie='" + isMovie + '\'' +
                 '}';
     }
 }

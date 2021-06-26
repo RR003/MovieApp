@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import axios from "axios";
 import "../Movies.css";
 import ParticleBackground from "./ParticleBackground";
+import Button from "@material-ui/core/Button";
 
 class Movies extends Component {
   state = {
@@ -10,13 +11,15 @@ class Movies extends Component {
     movie: "",
     data: "",
     images: [],
+    tvImages: [],
+    tvList: [],
     url: "",
+    showMov: true,
+    showTV: false,
   };
 
-  componentDidMount() {
-    let url = "https://movieapp003.herokuapp.com";
-    // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-
+  componentWillMount() {
+    let url = process.env.REACT_APP_URL;
     this.setState({ url: url });
     let list = JSON.parse(localStorage.getItem("list"));
     // console.log(this.state);
@@ -26,11 +29,23 @@ class Movies extends Component {
     // console.log(this.state);
     this.setState({ data: JSON.parse(localStorage.getItem("data")) });
     this.setState({ images: JSON.parse(localStorage.getItem("images")) });
-    console.log(this.state);
+    this.setState({ tvList: JSON.parse(localStorage.getItem("tvList")) });
+    this.setState({ tvImages: JSON.parse(localStorage.getItem("tvImages")) });
   }
 
-  getMovie = (event) => {
-    let index = event.target.value;
+  componentDidMount() {
+    if (this.state.tvList.length > this.state.movies.length) {
+      this.setState({ showMov: false });
+      this.setState({ showTV: true });
+      document.getElementById("tvButton").style.background = "#346566";
+    } else {
+      document.getElementById("themovieButton").style.background = "#346566";
+    }
+  }
+
+  getMovie = (e) => {
+    let index = e.currentTarget.value;
+
     localStorage.setItem("dataForMovieInfo", this.state.data);
     axios
       .get(this.state.url + `/movie/${this.state.movie}/${index}`)
@@ -65,10 +80,61 @@ class Movies extends Component {
       });
   };
 
+  clickTvImage = (event) => {
+    let index = event.target.value;
+    localStorage.setItem("dataForMovieInfo", this.state.data);
+    axios
+      .get(this.state.url + `/tv/${this.state.movie}/${index}`)
+      .then((res) => {
+        console.log(res.data);
+        // console.log(this.state.username)
+        this.props.history.push({
+          pathname: "/TvInfo",
+          state: {
+            newState: res.data,
+            data: this.state.data,
+          },
+        });
+      });
+  };
+
+  getTv = (e) => {
+    let index = e.currentTarget.value;
+
+    localStorage.setItem("dataForMovieInfo", this.state.data);
+    axios
+      .get(this.state.url + `/movie/${this.state.movie}/${index}`)
+      .then((res) => {
+        console.log(res.data);
+        // console.log(this.state.username)
+        this.props.history.push({
+          pathname: "/TvInfo",
+          state: {
+            newState: res.data,
+            data: this.state.data,
+          },
+        });
+      });
+  };
+
+  changeToTV = () => {
+    this.setState({ showMov: false });
+    this.setState({ showTV: true });
+    document.getElementById("tvButton").style.background = "#346566";
+    document.getElementById("themovieButton").style.background = "";
+  };
+  changeToMovies = () => {
+    this.setState({ showTV: false });
+    this.setState({ showMov: true });
+    document.getElementById("themovieButton").style.background = "#346566";
+    document.getElementById("tvButton").style.background = "";
+  };
+
   render() {
     let i = -1;
+    let j = -1;
     let showMovies = true;
-    if (this.state.movies.length === 0) {
+    if (this.state.movies.length === 0 && this.state.tvList.length === 0) {
       showMovies = false;
     }
 
@@ -83,12 +149,22 @@ class Movies extends Component {
               <h3>Make sure your spelling is accurate</h3>
             </div>
           )}
-          {showMovies && (
+          <br></br>
+          <center>
+            <Button id="themovieButton" onClick={this.changeToMovies}>
+              Movies
+            </Button>
+            <Button id="tvButton" onClick={this.changeToTV}>
+              TV Shows
+            </Button>
+          </center>
+
+          {showMovies && this.state.showMov && (
             <div>
-              <h2>
-                {this.state.movies.length} Search Results for "
-                {this.state.movie}""
-              </h2>
+              <h3>
+                {this.state.movies.length} Movie Search Results for "
+                {this.state.movie}"
+              </h3>
               {this.state.movies.map((movie) => (
                 <div id="theMovies">
                   <div>
@@ -115,15 +191,63 @@ class Movies extends Component {
 
                     <br></br>
                     <center>
-                      <button
+                      <Button
                         id="movieTitle"
                         value={++i}
                         onClick={this.getMovie}
+                        color="primary"
+                        variant="contained"
                       >
-                        {movie}
-                      </button>
+                        {movie.length <= 50 && movie}
+                        {movie.length > 50 && movie.substring(0, 50) + "..."}
+                      </Button>
+                    </center>
+                    <br></br>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showMovies && this.state.showTV && (
+            <div>
+              <h3>{this.state.tvList.length} TV Show Search Results</h3>
+              {this.state.tvList.map((tv) => (
+                <div id="theMovies">
+                  <div>
+                    <center>
+                      {this.state.tvImages[j + 1] !== "-1" ? (
+                        <input
+                          type="image"
+                          src={this.state.tvImages[j + 1]}
+                          onClick={this.clickTvImage}
+                          value={j + 1}
+                          id="image"
+                        />
+                      ) : (
+                        <input
+                          type="image"
+                          id="image"
+                          onClick={this.clickTvImage}
+                          value={j + 1}
+                          src="https://www.radiationreport.com/wp-content/uploads/2013/08/no-preview.jpg"
+                        ></input>
+                      )}
                     </center>
 
+                    <br></br>
+                    <center>
+                      <Button
+                        id="movieTitle"
+                        value={++j}
+                        onClick={this.getTv}
+                        color="primary"
+                        variant="contained"
+                      >
+                        {tv.length <= 50 && tv}
+                        {tv.length > 50 && tv.substring(0, 50) + "..."}
+                      </Button>
+                    </center>
                     <br></br>
                   </div>
                 </div>

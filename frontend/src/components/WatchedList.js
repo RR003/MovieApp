@@ -31,61 +31,86 @@ class WatchedList extends Component {
 
   async componentDidMount() {
     console.log(this.props.location.state);
-    let url = "https://movieapp003.herokuapp.com";
-    // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-
+    let url = process.env.REACT_APP_URL;
     this.setState({ url: url });
-    try {
-      if (
-        this.props.location.state.username === undefined ||
-        this.props.location.state.username === null
-      ) {
-        console.log("there is nothing here");
-        document.getElementById("signedIn").style.visibility = "hidden";
-      } else {
-        let dates = [];
-        let movieTitles = [];
-        let rating = [];
-        let ids = [];
-        console.log("before");
-        let rest = await fetch(
-          url + `/user/${this.props.location.state.username}`
-        );
-        console.log(rest);
-        let response = await rest.json();
-        console.log(response);
-        let movies = response.watchedList;
-        console.log("MOVIES = " + movies);
-        for (let i = 0; i < movies.length; i++) {
-          let movie = movies[i];
-          let res = await fetch(url + `/movie/get/${movie.movieId}`);
-          let body = await res.json();
-          movieTitles.push(body.title);
-          ids.push(body.id);
-          dates.push(movie.dateCreated);
-          if (movie.rating === -1) {
-            rating.push(
-              <button
-                id="giveRating"
-                value={i}
-                onClick={this.clickedGiveRating}
-              >
-                Give Rating
-              </button>
-            );
-          } else {
-            rating.push(movie.rating);
+    let show = false;
+    let settings = {
+      method: "GET",
+      headers: {
+        token: sessionStorage.getItem("token"),
+      },
+    };
+
+    let response = await fetch(url + "/user/test", settings);
+    let authData = await response.json();
+    if (authData.url === "valid") {
+      this.setState({ showFriends: true });
+      show = true;
+    }
+
+    if (show) {
+      try {
+        if (
+          this.props.location.state.username === undefined ||
+          this.props.location.state.username === null
+        ) {
+          console.log("there is nothing here");
+          document.getElementById("signedIn").style.visibility = "hidden";
+        } else {
+          let dates = [];
+          let movieTitles = [];
+          let rating = [];
+          let ids = [];
+          console.log("before");
+          let rest = await fetch(
+            url + `/user/${this.props.location.state.username}`
+          );
+          console.log(rest);
+          let response = await rest.json();
+          console.log(response);
+          let movies = response.watchedList;
+          console.log("MOVIES = " + movies);
+          for (let i = 0; i < movies.length; i++) {
+            let movie = movies[i];
+            if (movie.isMovie === "yes") {
+              let res = await fetch(url + `/movie/get/${movie.movieId}`);
+              let body = await res.json();
+              movieTitles.push(body.title);
+              ids.push(body.id);
+            } else {
+              let res = await fetch(url + `/tv/get/${movie.movieId}`);
+              let body = await res.json();
+              movieTitles.push(body.title);
+              ids.push(body.id);
+            }
+
+            dates.push(movie.dateCreated);
+            if (movie.rating === -1) {
+              rating.push(
+                <button
+                  id="giveRating"
+                  value={i}
+                  onClick={this.clickedGiveRating}
+                >
+                  Give Rating
+                </button>
+              );
+            } else {
+              rating.push(movie.rating);
+            }
           }
+          this.setState({ movieTitles: movieTitles });
+          this.setState({ dateInfo: dates });
+          this.setState({ ids: ids });
+          console.log(rating);
+          this.setState({ ratings: rating });
+          document.getElementById("signedOut").style.visibility = "hidden";
         }
-        this.setState({ movieTitles: movieTitles });
-        this.setState({ dateInfo: dates });
-        this.setState({ ids: ids });
-        console.log(rating);
-        this.setState({ ratings: rating });
-        document.getElementById("signedOut").style.visibility = "hidden";
+      } catch (err) {
+        console.log("there is an error");
+        document.getElementById("signedIn").style.visibility = "hidden";
       }
-    } catch (err) {
-      console.log("there is an error");
+    } else {
       document.getElementById("signedIn").style.visibility = "hidden";
     }
   }

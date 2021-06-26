@@ -6,6 +6,9 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   min-width: 400px;
   background-color: #c8dfda;
+  max-height: 350px;
+  overflow: scroll;
+  display: block;
 }
 
 #header {

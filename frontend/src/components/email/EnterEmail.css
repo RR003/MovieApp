@@ -1,3 +1,7 @@
 #emailForm {
   padding-top: 3em;
 }
+
+#field {
+  width: 500px;
+}

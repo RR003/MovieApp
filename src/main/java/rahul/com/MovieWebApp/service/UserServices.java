@@ -56,6 +56,52 @@ public class UserServices {
         mailSender.send(message);
     }
 
+    public void sendConfirmationEmail(UserInfo userInfo) throws MessagingException, UnsupportedEncodingException {
+        String toAddress = userInfo.getEmail();
+        String fromAddress = "mail2rahulraja@gmail.com";
+        String senderName = "The Movie App";
+        String subject = "Confirming Sign In";
+        String content = "Dear [[name]],<br>"
+                + "You have successfully created a new account on our service without using Google Sign In and can only login using this feature only. Your current USERNAME is [[username]]. You can use your username to allow other people to send friend requests to you!<br>"
+                + "Thank you,<br>"
+                + "The movie app.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+
+        content = content.replace("[[name]]", userInfo.getFirstName() + " " +  userInfo.getLastName());
+        content = content.replace("[[username]]", userInfo.getUsername());
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+    }
+
+    public void sendProblem(String email, String content2) throws UnsupportedEncodingException, MessagingException {
+        String toAddress = "officialmovieapp@gmail.com";
+        String fromAddress = "mail2rahulraja@gmail.com";
+        String senderName = email;
+        String subject = "User problem / Suggestion";
+        String content = content2;
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+    }
+
+
+
     public boolean verify(String verificationCode) {
         UserInfo userInfo = userInfoRepository.findByVerificationCode(verificationCode);
         System.out.println(userInfo);
@@ -103,7 +149,4 @@ public class UserServices {
         helper.setText(content, true);
         mailSender.send(message);
     }
-
-
-
 }

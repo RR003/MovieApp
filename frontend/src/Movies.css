@@ -4,8 +4,10 @@
 }
 
 #movieTitle {
-  height: 3em;
-  background-color: #0886ee;
+  height: 3.5em;
+  background-color: #07192b;
+  color: #eef2f7;
+  max-width: 300px;
 }
 
 #movieTitle:hover {
@@ -13,12 +15,13 @@
 }
 
 #image {
-  height: 280px;
-  width: 500px;
+  height: 200px;
+  width: 300px;
 }
 
 #theMovies {
   padding-left: 5em;
+  padding-right: 5em;
   padding-bottom: 1em;
   display: inline-block;
 }

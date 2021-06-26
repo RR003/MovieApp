@@ -12,9 +12,7 @@ class Ratings extends Component {
   };
   handleSubmit = () => {
     console.log("Rating = " + this.state.rating);
-    let url = "https://movieapp003.herokuapp.com";
-    // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-
+    let url = process.env.REACT_APP_URL;
     setTimeout(
       axios.put(url + "/user/updateWatchedList", {
         username: this.props.state.username,

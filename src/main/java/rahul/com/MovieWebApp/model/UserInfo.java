@@ -22,8 +22,12 @@ public class UserInfo {
     private String verified;
     private String verificationCode;
 
+
     @Transient // not in database
     private ArrayList<WatchedList> watchedList = new ArrayList<>();
+
+    @Transient // not in database
+    private ArrayList<Integer> tvWatchList = new ArrayList<>();
 
     @Transient
     private ArrayList<Integer> watchList = new ArrayList<>();
@@ -117,17 +121,29 @@ public class UserInfo {
         this.verificationCode = verificationCode;
     }
 
+    public ArrayList<Integer> getTvWatchList() {
+        return tvWatchList;
+    }
+
+    public void setTvWatchList(ArrayList<Integer> tvWatchList) {
+        this.tvWatchList = tvWatchList;
+    }
+
+
+
     @Override
     public String toString() {
-        return "User{" +
+        return "UserInfo{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", verified=" + verified +
+                ", verified='" + verified + '\'' +
+                ", verificationCode='" + verificationCode + '\'' +
                 ", watchedList=" + watchedList +
+                ", tvWatchList=" + tvWatchList +
                 ", watchList=" + watchList +
                 '}';
     }

@@ -9,7 +9,7 @@ export default function ParticleBackground() {
       options={{
         background: {
           color: {
-            value: "#dec8c8",
+            value: "#ffffff",
           },
         },
         fpsLimit: 60,
@@ -43,14 +43,14 @@ export default function ParticleBackground() {
         },
         particles: {
           color: {
-            value: "#ffffff",
+            value: "#b72aa9",
           },
           links: {
-            color: "#ffffff",
+            color: "#b72aa9",
             distance: 150,
             enable: true,
-            opacity: 0.8,
-            width: 3,
+            opacity: 0.4,
+            width: 2,
           },
           collisions: {
             enable: true,
@@ -60,7 +60,7 @@ export default function ParticleBackground() {
             enable: true,
             outMode: "bounce",
             random: true,
-            speed: 4,
+            speed: 2,
             straight: false,
           },
           number: {
@@ -79,7 +79,7 @@ export default function ParticleBackground() {
         },
         size: {
           random: true,
-          value: 5,
+          value: 8,
         },
         detectRetina: true,
       }}

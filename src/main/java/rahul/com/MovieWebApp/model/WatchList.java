@@ -11,8 +11,8 @@ public class WatchList {
     private int id;
 
     private String username;
-
     private int movieId;
+    private String isMovie;
 
     public int getId() {
         return id;
@@ -38,11 +38,21 @@ public class WatchList {
         this.movieId = movieId;
     }
 
+    public String getIsMovie() {
+        return isMovie;
+    }
+
+    public void setIsMovie(String isMovie) {
+        this.isMovie = isMovie;
+    }
+
     @Override
     public String toString() {
         return "WatchList{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", movieId=" + movieId +
+                ", isMovie='" + isMovie + '\'' +
                 '}';
     }
 }

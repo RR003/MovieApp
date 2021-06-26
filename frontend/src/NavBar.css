@@ -56,6 +56,16 @@
   padding-left: 1em;
 }*/
 
-#menuoptions {
+#fade-menu {
+  display: inline-block;
+}
+
+#button2 {
   float: right;
+  left: 0;
+}
+
+#logo {
+  width: 175px;
+  height: auto;
 }

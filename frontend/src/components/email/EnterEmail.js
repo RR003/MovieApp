@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import NavBar from "./NavBar";
+import NavBar from "../NavBar";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import ParticleBackground from "./ParticleBackground";
-import "../EnterEmail.css";
+import ParticleBackground from "../ParticleBackground";
+import "./EnterEmail.css";
 import axios from "axios";
 
 const EnterEmail = (props) => {
@@ -14,8 +14,7 @@ const EnterEmail = (props) => {
     setEmail(event.target.value);
   };
 
-  let urls = "https://movieapp003.herokuapp.com";
-  // if (process.env.NODE_ENV === "development") urls = "http://localhost:8081";
+  let urls = process.env.REACT_APP_URL;
 
   const onSubmit = () => {
     axios.post(urls + "/user/forgotPassword", { url: email }).then((res) => {

@@ -5,20 +5,15 @@ import { Link } from "react-router-dom";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
-import Badge from "@material-ui/core/Badge";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import MoreIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
-import Movies from "./Movies";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import logo from "../showbinge.png";
+
+import Fade from "@material-ui/core/Fade";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -74,31 +69,50 @@ const useStyles = makeStyles((theme) => ({
 const NavBar = (props) => {
   const [movieTitle, setMovieTitle] = React.useState("");
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    console.log(event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  };
+
+  let url = process.env.REACT_APP_URL;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   // const state = props.location;
   let data = null;
   if (props.id === undefined) {
-    console.log("undefined");
+    // console.log("undefined");
     data = {
       username: undefined,
     };
   } else {
     data = props.id;
-    console.log("DATA = " + props.id.username);
+    // console.log("DATA = " + props.id.username);
   }
 
   let isSigninHidden = false;
-  if (data.username !== undefined && data.username !== null) {
-    console.log("person is signed in");
+
+  if (
+    data.username !== undefined &&
+    data.username !== null &&
+    sessionStorage.getItem("token") !== null
+  ) {
+    // console.log("person is signed in");
     isSigninHidden = true;
   } else {
-    console.log("person is not signed in");
+    // console.log("person is not signed in");
   }
 
-  let url = "https://movieapp003.herokuapp.com";
-  // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
-
-  // console.log(data);
-  // console.log(data);
+  const onKeyUp = (event) => {
+    if (event.charCode === 13) {
+      setMovieTitle(event.target.value);
+      getMovieFunction();
+    }
+  };
 
   const handleMovieTitleChange = (event) => {
     setMovieTitle(event.target.value);
@@ -106,22 +120,33 @@ const NavBar = (props) => {
 
   const getMovieFunction = () => {
     console.log("getting movie");
-    axios.get(url + `/movie/${movieTitle}`).then((res) => {
-      console.log(data);
-      console.log(JSON.stringify(res.data[0]));
-      console.log(JSON.stringify(res.data[1]));
-      localStorage.setItem("list", JSON.stringify(res.data[0]));
-      localStorage.setItem("images", JSON.stringify(res.data[1]));
-      localStorage.setItem("title", movieTitle);
-      localStorage.setItem("data", JSON.stringify(data));
-      console.log(localStorage.getItem("list"));
-      console.log(localStorage.getItem("title"));
-      console.log(JSON.parse(localStorage.getItem("data")).username);
-      window.location.href = "/movies";
-    });
+    axios
+      .get(url + `/movie/${movieTitle}`)
+      .then((res) => {
+        console.log(data);
+        console.log(JSON.stringify(res.data[0]));
+        console.log(JSON.stringify(res.data[1]));
+        localStorage.setItem("list", JSON.stringify(res.data[0]));
+        localStorage.setItem("images", JSON.stringify(res.data[1]));
+        localStorage.setItem("title", movieTitle);
+        localStorage.setItem("data", JSON.stringify(data));
+        console.log(localStorage.getItem("list"));
+        console.log(localStorage.getItem("title"));
+        console.log(JSON.parse(localStorage.getItem("data")).username);
+      })
+      .then(
+        axios.get(url + `/tv/${movieTitle}`).then((res) => {
+          localStorage.setItem("tvList", JSON.stringify(res.data[0]));
+          localStorage.setItem("tvImages", JSON.stringify(res.data[1]));
+          window.location.href = "/movies";
+        })
+      );
   };
 
   function refreshPage() {
+    localStorage.clear();
+    props = "";
+    sessionStorage.clear();
     console.log("refresh page");
     window.location.href = "/";
   }
@@ -131,6 +156,15 @@ const NavBar = (props) => {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
+            <Link
+              to={{
+                pathname: "/",
+                state: data,
+              }}
+            >
+              <img src={logo} id="logo" />
+            </Link>
+
             <Typography className={classes.title} variant="h6" noWrap>
               {props.username}
             </Typography>
@@ -139,28 +173,18 @@ const NavBar = (props) => {
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="Search Movie…"
+                id="searchTerm"
+                placeholder="Search Movie/TV Show"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
                 onChange={handleMovieTitleChange}
-                onSubmit={getMovieFunction}
+                onKeyPress={onKeyUp}
                 inputProps={{ "aria-label": "search" }}
               />
             </div>
 
-            <div>
-              <Button
-                id="searchmovie"
-                color="secondary"
-                className={classes.enter}
-                onClick={getMovieFunction}
-                variant="outlined"
-              >
-                Enter
-              </Button>
-            </div>
             <div id="menuoptions">
               {isSigninHidden && (
                 <Link
@@ -172,7 +196,7 @@ const NavBar = (props) => {
                   <Button
                     id="button"
                     onClick={refreshPage}
-                    type="button"
+                    type="button2"
                     className="btn btn-danger"
                     color="secondary"
                   >
@@ -182,50 +206,102 @@ const NavBar = (props) => {
               )}
 
               {isSigninHidden && (
-                <Link
-                  to={{
-                    pathname: "/watchedList",
-                    state: data,
-                  }}
-                >
-                  <Button id="button" type="button" color="secondary">
-                    WatchedList
+                <div>
+                  <Button
+                    aria-controls="fade-menu"
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                    color="secondary"
+                    id="button2"
+                  >
+                    Menu
                   </Button>
-                </Link>
+                  <Menu
+                    id="fade-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={open}
+                    onClose={handleClose}
+                    TransitionComponent={Fade}
+                  >
+                    <MenuItem>
+                      <Link
+                        to={{
+                          pathname: "/",
+                          state: data,
+                        }}
+                      >
+                        <Button
+                          color="secondary"
+                          id="button"
+                          type="button"
+                          className="btn btn-danger"
+                        >
+                          Home
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link
+                        to={{
+                          pathname: "/friends",
+                          state: data,
+                        }}
+                      >
+                        <Button id="button1" type="button" color="secondary">
+                          Friends
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link
+                        to={{
+                          pathname: "/watchedList",
+                          state: data,
+                        }}
+                      >
+                        <Button id="button1" type="button" color="secondary">
+                          WatchedList
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                  </Menu>
+                </div>
               )}
 
-              <Link
-                to={{
-                  pathname: "/",
-                  state: data,
-                }}
-              >
-                <Button
-                  color="secondary"
-                  id="button"
-                  type="button"
-                  className="btn btn-danger"
-                >
-                  Home
-                </Button>
-              </Link>
-
               {!isSigninHidden && (
-                <Link
-                  to={{
-                    pathname: "/signIn",
-                  }}
-                >
-                  <Button
-                    edge="end"
-                    color="secondary"
-                    id="button"
-                    type="button"
-                    className="btn btn-danger"
+                <div>
+                  <Link
+                    to={{
+                      pathname: "/",
+                      state: data,
+                    }}
                   >
-                    Sign In
-                  </Button>
-                </Link>
+                    <Button
+                      color="secondary"
+                      id="button"
+                      type="button"
+                      className="btn btn-danger"
+                    >
+                      Home
+                    </Button>
+                  </Link>
+                  <Link
+                    to={{
+                      pathname: "/signIn",
+                    }}
+                  >
+                    <Button
+                      edge="end"
+                      color="secondary"
+                      id="button"
+                      type="button"
+                      className="btn btn-danger"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                </div>
               )}
             </div>
           </Toolbar>
@@ -236,81 +312,3 @@ const NavBar = (props) => {
 };
 
 export default NavBar;
-
-/*<div>
-        {console.log(isSigninHidden)}
-        <ul id="nav">
-          <li id="searchbar">
-            <input
-              id="search"
-              placeHolder="search movie..."
-              onChange={handleMovieTitleChange}
-            ></input>
-            <button id="searchButton" onClick={getMovieFunction}>
-              Search
-            </button>
-          </li>
-
-          {isSigninHidden && (
-            <li id="signout">
-              <Link
-                to={{
-                  pathname: "/",
-                  state: {},
-                }}
-              >
-                <button
-                  id="button"
-                  onClick={refreshPage}
-                  type="button"
-                  className="btn btn-danger"
-                >
-                  Sign Out
-                </button>
-              </Link>
-            </li>
-          )}
-
-          {isSigninHidden && (
-            <li id="watchedlist">
-              <Link
-                to={{
-                  pathname: "/watchedList",
-                  state: data,
-                }}
-              >
-                <button id="button" type="button" className="btn btn-danger">
-                  WatchedList
-                </button>
-              </Link>
-            </li>
-          )}
-
-          <li id="home">
-            <Link
-              to={{
-                pathname: "/",
-                state: data,
-              }}
-            >
-              <button id="button" type="button" className="btn btn-danger">
-                Home
-              </button>
-            </Link>
-          </li>
-
-          {!isSigninHidden && (
-            <li id="signin">
-              <Link
-                to={{
-                  pathname: "/signIn",
-                }}
-              >
-                <button id="button" type="button" className="btn btn-danger">
-                  Sign In
-                </button>
-              </Link>
-            </li>
-          )}
-        </ul>
-      </div>*/

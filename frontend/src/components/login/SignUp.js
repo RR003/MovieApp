@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import NavBar from "./NavBar";
+import NavBar from "../NavBar";
 import axios from "axios";
-import "../SignUp.css";
-import ParticleBackground from "./ParticleBackground";
+import "./SignUp.css";
+import ParticleBackground from "../ParticleBackground";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -46,8 +46,7 @@ const SignUp = (props) => {
     setEmail(event.target.value);
   };
 
-  let url = "https://movieapp003.herokuapp.com";
-  // if (process.env.NODE_ENV === "development") url = "http://localhost:8081";
+  let url = process.env.REACT_APP_URL;
 
   const handleOnSubmit = () => {
     if (password.length < 8)
@@ -75,6 +74,19 @@ const SignUp = (props) => {
               lastName: lastName,
               password: password,
               email: email,
+            },
+          });
+        } else if (response === "success2") {
+          props.history.push({
+            pathname: "/",
+            state: {
+              state: {
+                username: username,
+                firstName: firstName,
+                lastName: lastName,
+                password: password,
+                email: email,
+              },
             },
           });
         } else setMessage(response);
@@ -205,76 +217,3 @@ const SignUp = (props) => {
 };
 
 export default SignUp;
-
-/*<div>
-        <div id="all">
-          <NavBar></NavBar>
-          <div class="container">
-            <center>
-              <form id="signinform">
-                <h3>Create An Account</h3>
-                <div>
-                  <input
-                    id="firstName"
-                    type="text"
-                    placeholder="Enter First Name"
-                    onChange={handleFirstNameChange}
-                  ></input>
-                </div>
-                <div>
-                  <input
-                    id="lastName"
-                    type="text"
-                    placeholder="Enter Last Name"
-                    onChange={handleLastNameChange}
-                  ></input>
-                </div>
-                <div>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="Enter Email"
-                    onChange={handleEmailChange}
-                  ></input>
-                </div>
-                <div>
-                  <input
-                    id="username2"
-                    type="username"
-                    placeholder="Enter A Username"
-                    onChange={handleUsernameChange}
-                  ></input>
-                </div>
-                <div>
-                  <input
-                    id="password2"
-                    type="password"
-                    placeholder="Enter A Password"
-                    onChange={handlePasswordChange}
-                  ></input>
-                </div>
-                <div>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm Password"
-                    onChange={handleConfirmPasswordChange}
-                  ></input>
-                </div>
-                <div>
-                  <h4>{message}</h4>
-                </div>
-              </form>
-              <div id="buttons">
-                <button id="button2" onClick={handleOnSubmit}>
-                  Create Account
-                </button>
-                <button id="button3" onClick={handleSignIn}>
-                  Sign In
-                </button>
-              </div>
-            </center>
-          </div>
-        </div>
-        <ParticleBackground />
-      </div>*/

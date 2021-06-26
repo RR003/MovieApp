@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import NavBar from "./NavBar";
-import ParticleBackground from "./ParticleBackground";
+import NavBar from "../NavBar";
+import ParticleBackground from "../ParticleBackground";
 
 class NeedToVerify extends Component {
   state = {};

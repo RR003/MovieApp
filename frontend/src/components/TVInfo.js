@@ -5,71 +5,54 @@ import "../MovieInfo.css";
 import Button from "@material-ui/core/Button";
 import ParticleBackground from "./ParticleBackground";
 
-class MovieInfo extends Component {
-  constructor(props) {
-    super(props);
-  }
+class TVInfo extends Component {
   state = {
     id: this.props.location.state.newState.id,
     movie: this.props.location.state.newState.title,
     overview: this.props.location.state.newState.overview,
-    data: this.props.location.state.data,
-    dateReleased: this.props.location.state.newState.releaseDate,
+    firstDate: this.props.location.state.newState.startingDate,
+    endDate: this.props.location.state.newState.endDate,
     rating: this.props.location.state.newState.rating,
-    show: true,
-    ourRating: "",
+    seasons: this.props.location.state.newState.seasons,
     commentsAndRatings: "",
-    message2: "",
-    url: "",
-    showOverview: false,
-    showRatings: false,
     button1test: "show overview",
     button2test: "show ratings and comments",
-    showThisMessage: false,
+    showOverview: false,
+    showRatings: false,
+    url: "",
+    data: this.props.location.state.data,
   };
 
-  async componentDidMount() {
+  async componentWillMount() {
     let url = process.env.REACT_APP_URL;
 
     this.setState({ url: url });
-    let ratings = await fetch(url + `/movie/rating/${this.state.id}`);
+    let ratings = await fetch(url + `/tv/rating/${this.state.id}`);
     ratings = await ratings.json();
     if (ratings === -1) {
       ratings = "no ratings yet";
     }
     this.setState({ ourRating: ratings });
     let commentsAndRatings = await fetch(
-      url + `/movie/comment&rating/${this.state.id}`
+      url + `/tv/comment&rating/${this.state.id}`
     );
     commentsAndRatings = await commentsAndRatings.json();
-    console.log(commentsAndRatings);
     this.setState({ commentsAndRatings: commentsAndRatings });
-    let settings = {
-      method: "GET",
-      headers: {
-        token: sessionStorage.getItem("token"),
-      },
-    };
-
-    let response = await fetch(url + "/user/test", settings);
-    let authData = await response.json();
+    // console.log(commentsAndRatings);
     if (this.state.data !== {} && this.state.data !== undefined) {
       // console.log(this.state.data);
       if (
         this.state.data.username === undefined ||
-        this.state.data.username === null ||
-        authData.url !== "valid"
+        this.state.data.username === null
       ) {
         document.getElementById("signedIn").style.visibility = "hidden";
-        this.setState({ showThisMessage: true });
       } else {
         console.log(this.state.data.watchedList);
-        console.log(this.state.id);
         let isThere = false;
         for (let i = 0; i < this.state.data.watchedList.length; i++) {
           if (
             this.state.data.watchedList[i].movieId === this.state.id &&
-            this.state.data.watchedList[i].isMovie === "yes"
+            this.state.data.watchedList[i].isMovie === "no"
           ) {
             document.getElementById("watch").style.visibility = "hidden";
             document.getElementById("watched").style.visibility = "hidden";
@@ -83,19 +66,14 @@ class MovieInfo extends Component {
             "visible";
         }
 
-        for (let i = 0; i < this.state.data.watchList.length; i++) {
-          if (
-            this.state.data.watchList[i] === this.state.id &&
-            this.state.data.watchedList[i].isMovie === "yes"
-          ) {
+        for (let i = 0; i < this.state.data.tvWatchList.length; i++) {
+          if (this.state.data.tvWatchList[i] === this.state.id) {
             document.getElementById("watch").style.visibility = "hidden";
             console.log("2");
             break;
           }
         }
       }
-    } else {
-      this.setState({ showThisMessage: true });
     }
   }
 
@@ -104,8 +82,9 @@ class MovieInfo extends Component {
     if (this.state.data.username === undefined) {
       console.log("please log in");
     } else {
-      let list = this.state.data.watchList;
+      let list = this.state.data.tvWatchList;
       let isThere = false;
+      //
       for (let i = 0; i < list.length; i++) {
         if (list[i] === this.state.id) {
           isThere = true;
@@ -118,9 +97,8 @@ class MovieInfo extends Component {
         axios.post(this.state.url + "/user/addWatchList", {
           username: this.state.data.username,
           movieId: this.state.id,
-          isMovie: "yes",
+          isMovie: "no",
         });
-
         setTimeout(this.goToHome, 100);
       }
     }
@@ -128,14 +106,14 @@ class MovieInfo extends Component {
 
   addToWatchedList = () => {
     console.log(this.state.url);
-    let list = this.state.data.watchList;
+    let list = this.state.data.tvWatchList;
     for (let i = 0; i < list.length; i++) {
       if (this.state.id === list[i]) {
         axios.delete(this.state.url + "/user/deleteWatchList", {
           data: {
             username: this.state.data.username,
             movieId: this.state.id,
-            isMovie: "yes",
+            isMovie: "no",
           },
         });
       }
@@ -147,7 +125,7 @@ class MovieInfo extends Component {
       dateCreated: new Date(),
       rating: -1,
       comment: "",
-      isMovie: "yes",
+      isMovie: "no",
     });
 
     setTimeout(this.goToWatchList, 100);
@@ -186,19 +164,17 @@ class MovieInfo extends Component {
       this.setState({ button2test: "show ratings and comments" });
     }
   };
-
   render() {
     return (
       <div>
+        {console.log("length ==== " + this.state.commentsAndRatings.length)}
+        {console.log(this.state.commentsAndRatings)}
         <div>
           <NavBar id={this.state.data}></NavBar>
           <div id="everything">
             <center>
-              <h1>Movie Information for {this.state.movie}</h1>
+              <h1>TV Show Information for {this.state.movie}</h1>
               <h2 id="alreadyWatched">You already watched this</h2>
-              {this.state.showThisMessage && (
-                <h2>Create an account to add to your watch/watched lists</h2>
-              )}
               <div id="signedIn">
                 <div id="watch">
                   <Button id="addWatchList" onClick={this.addToWatchList}>
@@ -208,7 +184,7 @@ class MovieInfo extends Component {
 
                 <div id="watchedDiv">
                   <Button id="watched" onClick={this.addToWatchedList}>
-                    I watched this movie
+                    I watched this Show
                   </Button>
                   <h3></h3>
                 </div>
@@ -226,12 +202,18 @@ class MovieInfo extends Component {
                   <table id="movieInfoTable">
                     <tbody>
                       <tr>
-                        <td>Date Released</td>
-                        <td>{this.state.dateReleased}</td>
+                        <td>Show Time</td>
+                        <td>
+                          {this.state.firstDate} - {this.state.endDate}
+                        </td>
                       </tr>
                       <tr>
                         <td>Overview</td>
                         <td>{this.state.overview}</td>
+                      </tr>
+                      <tr>
+                        <td>Number of Seasons</td>
+                        <td>{this.state.seasons}</td>
                       </tr>
                       <tr>
                         <td>General Rating</td>
@@ -301,4 +283,4 @@ class MovieInfo extends Component {
   }
 }
 
-export default MovieInfo;
+export default TVInfo;

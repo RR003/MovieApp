@@ -1,0 +1,36 @@
+#friendRequest {
+  margin-top: 50px;
+}
+
+#friendsRequest,
+#friendsList {
+  display: inline-flex;
+  padding-bottom: 5em;
+}
+
+#friendsRequest {
+  margin-left: 200px;
+}
+
+#friendreqTable {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  min-width: 400px;
+  background-color: #c8dfda;
+  max-height: 300px;
+  overflow: scroll;
+}
+
+#friendsList {
+  max-height: 330px;
+  overflow: scroll;
+  margin-left: 3em;
+  border: ridge;
+}
+
+#friend-movie-table {
+  border-top: ridge;
+}
