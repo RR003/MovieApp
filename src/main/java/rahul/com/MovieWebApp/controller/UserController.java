@@ -139,7 +139,7 @@ public class UserController {
                 if (user.get().getVerified().equals("yes")) {
                     System.out.println("yeet");
                     if (encoder.matches(userInfo1.getPassword(), user.get().getPassword())) {
-                        String jwt = createJWT(user.get().getUsername(), 150000);
+                        String jwt = createJWT(user.get().getUsername(), 900000);
                         Claims claim = decodeJWT(jwt);
                         System.out.println(claim);
                         return new Image(jwt);
@@ -467,7 +467,7 @@ public class UserController {
                 userInfoRepository.save(userInfo1);
                 service.sendConfirmationEmail(userInfo1);
 
-                String jwt = createJWT(userInfo1.getUsername(), 150000);
+                String jwt = createJWT(userInfo1.getUsername(), 900000);
                 userInfo1.setVerificationCode(jwt);
                 Claims claim = decodeJWT(jwt);
                 System.out.println(claim);
