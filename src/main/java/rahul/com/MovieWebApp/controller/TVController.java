@@ -179,4 +179,37 @@ public class TVController {
         list.add(images);
         return list;
     }
+
+    @GetMapping("/popular")
+    public ArrayList<ArrayList<Object>> getPopularMovies() {
+        ArrayList<Object> listOfRecMovies = new ArrayList<>();
+        ArrayList<Object> titles = new ArrayList<>();
+        ArrayList<Object> images = new ArrayList<>();
+
+        String url = "https://api.themoviedb.org/3/tv/popular?api_key=" + apiKey + "&language=en-US&page=1";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        String string = response.getBody();
+        JSONObject root = new JSONObject(string);
+        JSONArray array = root.getJSONArray("results");
+
+        for (int j = 0; j < array.length(); j++) {
+            // ArrayList<Object> movie = new ArrayList<>();
+            JSONObject object = array.getJSONObject(j);
+            int movieId = object.getInt("id");
+            if (!listOfRecMovies.contains(movieId)) {
+                listOfRecMovies.add(movieId);
+                titles.add(object.getString("original_name"));
+                try {
+                    images.add("http://image.tmdb.org/t/p/w500" + object.getString("backdrop_path"));
+                }catch (JSONException e) {
+                    images.add("-1");
+                }
+            }
+        }
+        ArrayList<ArrayList<Object>> list = new ArrayList<>();
+        list.add(listOfRecMovies);
+        list.add(titles);
+        list.add(images);
+        return list;
+    }
 }
