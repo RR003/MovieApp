@@ -30,13 +30,14 @@ public class TVController {
     @Autowired
     private WatchedListRepository watchedListRepository;
 
-    @GetMapping("/{title}")
-    public String[][] getTVInfo(@PathVariable String title) {
-        String url = "https://api.themoviedb.org/3/search/tv?api_key=" + apiKey + "&language=en-US&page=1&query=" + title;
+    @GetMapping("/{title}/{pageNumber}")
+    public Object[][] getTVInfo(@PathVariable String title, @PathVariable int pageNumber) {
+        String url = "https://api.themoviedb.org/3/search/tv?api_key=" + apiKey + "&language=en-US&page=" + pageNumber + "&query=" + title;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         String string = response.getBody();
         JSONObject root = new JSONObject(string);
         JSONArray array = root.getJSONArray("results");
+        int totalPages = root.getInt("total_pages");
         String[] movieTitles = new String[array.length()];
         String[] movieImages = new String[array.length()];
         for (int i = 0; i < array.length(); i++) {
@@ -46,9 +47,11 @@ public class TVController {
             String url2 = getImage(movieId).getUrl();
             movieImages[i] = url2;
         }
-        String[][] result = new String[2][];
+        Object[][] result = new Object[3][];
         result[0] = movieTitles;
         result[1] = movieImages;
+        Object[] index = {totalPages};
+        result[2] = index;
         return result;
     }
 
@@ -63,9 +66,9 @@ public class TVController {
                 root.getInt("number_of_seasons"));
     }
 
-    @GetMapping("/{title}/{index}")
-    public TV getMovieInfo(@PathVariable("title") String title, @PathVariable("index") int index) {
-        String url = "https://api.themoviedb.org/3/search/tv?api_key=" + apiKey + "&language=en-US&page=1&query=" + title;
+    @GetMapping("/{title}/{pageNumber}/{index}")
+    public TV getMovieInfo(@PathVariable("title") String title, @PathVariable("pageNumber") int pageNumber, @PathVariable("index") int index) {
+        String url = "https://api.themoviedb.org/3/search/tv?api_key=" + apiKey + "&language=en-US&page="+ pageNumber +"&query=" + title;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         String string = response.getBody();
         // System.out.println(string);
@@ -106,6 +109,7 @@ public class TVController {
                 total += rating;
             }
         }
+        System.out.println("total count = " + totalCount);
         if (totalCount == 0) return -1;
         return total / totalCount;
     }

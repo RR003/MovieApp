@@ -139,7 +139,7 @@ public class UserController {
                 if (user.get().getVerified().equals("yes")) {
                     System.out.println("yeet");
                     if (encoder.matches(userInfo1.getPassword(), user.get().getPassword())) {
-                        String jwt = createJWT(user.get().getUsername(), 900000);
+                        String jwt = createJWT(user.get().getUsername(), 1200000);
                         Claims claim = decodeJWT(jwt);
                         System.out.println(claim);
                         return new Image(jwt);

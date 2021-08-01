@@ -36,13 +36,17 @@ public class MovieController {
     @Autowired
     private WatchListRepository watchListRepository;
 
-    public JSONArray helperFunction(String title) {
-        String url = "https://api.themoviedb.org/3/search/movie?api_key=" +  apiKey +
-                "&language=en-US&query=" + title;
+    public Object[] helperFunction(String title, int page) {
+
+        String url = "https://api.themoviedb.org/4/search/movie?api_key=" +  apiKey +
+                "&language=en-US&query=" +title+ "&page="+page+"&include_adult=false";
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         String string = response.getBody();
         JSONObject root = new JSONObject(string);
-        return root.getJSONArray("results");
+        Object[] array = new Object[2];
+        array[0] = root.getJSONArray("results");
+        array[1] = root.getInt("total_pages");
+        return array;
     }
 
     @GetMapping("/get/{id}")
@@ -56,9 +60,11 @@ public class MovieController {
                 root.getString("release_date"), root.getDouble("vote_average"));
     }
 
-    @GetMapping("/{title}")
-    public String[][] getMovieInfo(@PathVariable("title") String title) {
-        JSONArray movies = helperFunction(title);
+    @GetMapping("/{title}/{page}")
+    public Object[][] getMovieInfo(@PathVariable("title") String title, @PathVariable("page") int page) {
+        Object[] array = helperFunction(title, page);
+        JSONArray movies = (JSONArray)array[0];
+        // System.out.println(movies);
         String[] movieTitles = new String[movies.length()];
         String[] movieImages = new String[movies.length()];
         // HashMap<String, String> map = new HashMap<>();
@@ -74,14 +80,17 @@ public class MovieController {
                 movieImages[i] = "http://image.tmdb.org/t/p/w500" + object;
             }
         }
-        String[][] result = new String[2][];
+        Object[][] result = new Object[3][];
         result[0] = movieTitles;
         result[1] = movieImages;
+        Object[] temp = {array[1]};
+        result[2] = temp;
         return result;
     }
 
     @GetMapping("/recommendations/{username}")
     public ArrayList<ArrayList<Object>> getMovieRecommendations(@PathVariable("username") String username) {
+        System.out.println("getting recommended movies");
         ArrayList<Integer> listOfWatchedMovies = watchedListRepository.findWatchlistByUsername(username, "yes");
         // List<Integer> listOfToWatchMovies = watchListRepository.findByUsername(username, "yes");
         ArrayList<Object> listOfRecMovies = new ArrayList<>();
@@ -204,9 +213,10 @@ public class MovieController {
         return movieImages;
     }*/
 
-    @GetMapping("/{title}/{index}")
-    public Movie getMovieInfo(@PathVariable("title") String title, @PathVariable("index") int index) {
-        JSONArray movies = helperFunction(title);
+    @GetMapping("/{title}/{page}/{index}")
+    public Movie getMovieInfos(@PathVariable("title") String title, @PathVariable("index") int index, @PathVariable("page") int page) {
+        Object[] array = helperFunction(title, page);
+        JSONArray movies = (JSONArray)array[0];
         // System.out.println(movies);
         JSONObject movie = movies.getJSONObject(index);
         return new Movie(movie.getInt("id"), movie.getString("original_title"), movie.getString("overview"),
@@ -224,6 +234,7 @@ public class MovieController {
                 total += rating;
             }
         }
+        System.out.println("totalCount = " + totalCount);
         if (totalCount == 0) return -1;
         return total / totalCount;
     }
